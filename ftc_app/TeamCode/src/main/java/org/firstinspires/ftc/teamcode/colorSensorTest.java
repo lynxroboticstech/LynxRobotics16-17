@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.HardwareFunctions;
 /**
  * Created by Student on 9/13/2016.
  */
-@Autonomous(name="Color Sensor Test", group="Iterative Opmode")
+@Autonomous(name="ColorSensorTest", group="Iterative Opmode")
 public class ColorSensorTest extends LinearOpMode {
 HardwareMap hw=null;
     //comment

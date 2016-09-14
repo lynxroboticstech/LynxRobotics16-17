@@ -72,6 +72,27 @@ public class HardwareFunctions{
     public void setColorSensorLight(boolean b) {
         colorSensor.enableLed(b);
     }
+    /*public static class ColorAlgorithm {
+        public boolean isSensorInRange() {
+            return false;
+        }
+        public BeaconColor getBeaconColor() { //0 for
+            return null;
+        }
+        public int getRange() { //0 for very close, 1 for small range, 2 for far ranges
+            return 0;
+        }
+        public boolean inRange() { //return false for range
+            return false;
+        }
+    }
+    public enum BeaconColor {
+        RED,
+        BLUE;
+    }
+    public static class Navigation {
+
+    }*/
 
     public float getOpticalDistanceSensorData(OpticalDistanceSensor ODS) {
         return 1;
