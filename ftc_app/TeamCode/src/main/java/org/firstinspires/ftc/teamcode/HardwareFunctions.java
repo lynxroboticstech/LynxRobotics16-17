@@ -40,6 +40,7 @@ public class HardwareFunctions{
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         colorSensor = hardwareMap.colorSensor.get("color sensor");
+        colorSensor.enableLed(false);
     }
 
     public void runDriveTrain(float rightPower,float leftPower){
@@ -67,6 +68,9 @@ public class HardwareFunctions{
     }
     public float getColorSensorGreen(){
         return this.colorSensor.green();
+    }
+    public void setColorSensorLight(boolean b) {
+        colorSensor.enableLed(b);
     }
 
     public float getOpticalDistanceSensorData(OpticalDistanceSensor ODS) {

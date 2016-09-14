@@ -4,15 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcontroller.internal.testcode.TestTelemetry;
-import org.firstinspires.ftc.robotcore.internal.AppUtil;
-import org.firstinspires.ftc.robotcore.internal.TelemetryInternal;
-import org.firstinspires.ftc.teamcode.HardwareFunctions;
 /**
  * Created by Student on 9/13/2016.
  */
-@Autonomous(name="Color Sensor Test", group="Iterative Opmode")
-public class ColorSensorTest extends LinearOpMode {
+@Autonomous(name="Autonomous", group="Iterative Opmode")
+public class AutonomousTest extends LinearOpMode {
 HardwareMap hw=null;
     //comment
    public void runOpMode() throws InterruptedException{
