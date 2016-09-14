@@ -59,14 +59,14 @@ public class HardwareFunctions{
         return 1;
     }
 
-    public float getColorSensorBlue(ColorSensor colorSensor){
-        return 1;
+    public float getColorSensorBlue(){
+        return this.colorSensor.blue();
     }
-    public float getColorSensorRed(ColorSensor colorSensor){
-        return 1;
+    public float getColorSensorRed(){
+        return this.colorSensor.red();
     }
-    public float getColorSensorGreen(ColorSensor colorSensor){
-        return 1;
+    public float getColorSensorGreen(){
+        return this.colorSensor.green();
     }
 
     public float getOpticalDistanceSensorData(OpticalDistanceSensor ODS) {
