@@ -9,9 +9,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -28,8 +30,11 @@ public class HardwareFunctions{
     public DcMotor leftMotor   = null;
     public DcMotor rightMotor   = null;
     public ColorSensor colorSensor = null;
+    public OpticalDistanceSensor ODS = null;
 
-
+    public GyroSensor gyroSensor=null;
+    public UltrasonicSensor ultrasonicSensor=null;
+    public UltrasonicSensor ultrasonicSensor2=null;
     public HardwareFunctions(HardwareMap hardwareMap){
         hwMap = hardwareMap;
         leftMotor = hwMap.dcMotor.get("left_drive");
@@ -41,23 +46,77 @@ public class HardwareFunctions{
 
         colorSensor = hardwareMap.colorSensor.get("color sensor");
         colorSensor.enableLed(false);
+
+        ODS = hwMap.opticalDistanceSensor.get("ODS");
+
+        gyroSensor=hwMap.gyroSensor.get("Gyro_Sensor");
+        gyroSensor.calibrate();
+
+        ultrasonicSensor=hardwareMap.ultrasonicSensor.get("ultrasonic");
+        ultrasonicSensor2=hardwareMap.ultrasonicSensor.get("ultrasonic2");
     }
 
     public void runDriveTrain(float rightPower,float leftPower){
         leftMotor.setPower(rightPower);
         rightMotor.setPower(leftPower);
     }
+    public void travelMeters(float x) {
+        if(x>0) {
+            travel(x, true);
+        } else {
+            travel(-x, false);
+        }
+    }
+    private void travel(float x, boolean direction) {
 
+        leftMotor.setPower(4);
+        rightMotor.setPower(4);
+    }
+
+    public void enableEncoders(){
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public void resetEncoders(){
+        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void disableEncoders(){
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 
     //TODO:FILL IN FUNCTIONS
-    public void goStraightXDistance(float X){
+    public void goStraightXDistance(int X, int speed){
+        final int motorTicksPerRevolution=1440;
+        final double PI=3.14;
+        final double RADIUS=1.5;
+        final double circumference=PI*RADIUS*2;
+        final int ticksPerInch=(int)(motorTicksPerRevolution/circumference);
+
+        final int target = X*ticksPerInch;
+
+        leftMotor.setTargetPosition(target);
+        rightMotor.setTargetPosition(target);
+
+        while(leftMotor.getCurrentPosition()<leftMotor.getTargetPosition()){//right motor would work as well
+            leftMotor.setPower(speed);
+            rightMotor.setPower(speed);
+        }
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
 
     }
+
     public void turnXDegrees(float X){
 
     }
-    public float getTouchSensorData(TouchSensor touchSensor){
-        return 1;
+    public double getTouchSensorData(TouchSensor touchSensor){
+        return touchSensor.getValue();
     }
 
     public float getColorSensorBlue(){
@@ -71,6 +130,12 @@ public class HardwareFunctions{
     }
     public void setColorSensorLight(boolean b) {
         colorSensor.enableLed(b);
+    }
+    public double getGyroRotation(GyroSensor gs){
+        return gs.getRotationFraction();
+    }
+    public double getUltrasonicData(UltrasonicSensor us){
+        return us.getUltrasonicLevel();
     }
     /*public static class ColorAlgorithm {
         public boolean isSensorInRange() {
@@ -94,8 +159,8 @@ public class HardwareFunctions{
 
     }*/
 
-    public float getOpticalDistanceSensorData(OpticalDistanceSensor ODS) {
-        return 1;
+    public double getOpticalDistanceSensorData(OpticalDistanceSensor ODS) {
+        return ODS.getLightDetected();
     }
 
 
