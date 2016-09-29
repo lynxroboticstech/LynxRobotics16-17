@@ -3,17 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
-import org.firstinspires.ftc.robotcontroller.internal.testcode.TestTelemetry;
-import org.firstinspires.ftc.robotcore.internal.AppUtil;
-import org.firstinspires.ftc.robotcore.internal.TelemetryInternal;
-import org.firstinspires.ftc.teamcode.HardwareFunctions;
 /**
  * Created by Student on 9/13/2016.
  */
 @Autonomous(name="Napalm", group="Iterative Opmode")
-public class napalm extends LinearOpMode {
+public class PidLoop extends LinearOpMode {
+    //WHY ARE YOU RENAMING THINGS?   PLEASE DON'T BREAK THINGS.
     HardwareMap hw=null;
     //comment
     int currentPhase=0;
@@ -29,6 +25,7 @@ public class napalm extends LinearOpMode {
     double Ki=.001; //integral constant
     double previousAngVel=0;
     double angVelDerivative=0;
+    double previousT=-1;
     public void runOpMode() throws InterruptedException{
         HardwareFunctions hf=new HardwareFunctions(hardwareMap);
         waitForStart();
@@ -66,7 +63,12 @@ public class napalm extends LinearOpMode {
             //phase 2--turn 90 degrees
             else if(currentPhase==1){
                 hf.runDriveTrain(-.5f,0);
-                zCounter+=hf.getGyroRotation(hf.gyroSensor)-gyroValueWhenStraight;
+                if(previousT==-1){
+                    previousT=System.currentTimeMillis();
+                }
+                //TO DO TEST
+                zCounter+=(hf.getGyroRotation(hf.gyroSensor)-gyroValueWhenStraight)*previousT;
+                previousT=System.currentTimeMillis()-previousT;
                 //800 was chosen based on experimentation.  Choose values to better match
                 if(zCounter>800){
                     zCounter=0;
@@ -78,12 +80,12 @@ public class napalm extends LinearOpMode {
             //phase 3--go straight until we see the color sensor
             else if(currentPhase==2){
                 //TODO:  MAKE SURE THAT THIS PART OF THE CODE IS WHAT WE WANT.  I SUSPECT THAT IT IS NOT.
-               //p(actually techincally c loop) loop--update to pid loop maybe?
+                //p(actually technically c loop) loop--update to pid loop maybe?
                 if(hf.getGyroRotation(hf.gyroSensor)-gyroValueWhenStraight>0){
                     currentLeftMotorPower-=.001;
                     currentRightMotorPower+=.001;
                 }
-                else if(hf.getGyroRotation(hf.gyroSensor)-gyroValueWhenStraight<0){
+                else if(hf.getGyroRotation(hf.gyroSensor)-gyroValueWhenStraight<0){//unnecessary conditional
                     currentLeftMotorPower+= .001;
                     currentRightMotorPower-= .001;
                 }
@@ -122,6 +124,7 @@ public class napalm extends LinearOpMode {
                hf.runDriveTrain(0,0);
            }*/
             //hf.runDriveTrain(hf.getColorSensorBlue(), hf.getColorSensorGreen());
+            idle();
         }
     }
 

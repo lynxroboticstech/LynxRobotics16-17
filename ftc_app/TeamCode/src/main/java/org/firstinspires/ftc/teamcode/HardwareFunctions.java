@@ -49,16 +49,16 @@ public class HardwareFunctions{
 
         ODS = hwMap.opticalDistanceSensor.get("ODS");
 
-        gyroSensor=hwMap.gyroSensor.get("Gyro_Sensor");
+        gyroSensor=hwMap.gyroSensor.get("gyro");
         gyroSensor.calibrate();
 
         ultrasonicSensor=hardwareMap.ultrasonicSensor.get("ultrasonic");
         ultrasonicSensor2=hardwareMap.ultrasonicSensor.get("ultrasonic2");
     }
 
-    public void runDriveTrain(float rightPower,float leftPower){
-        leftMotor.setPower(rightPower);
-        rightMotor.setPower(leftPower);
+    public void runDriveTrain(float leftPower,float rightPower){
+        leftMotor.setPower(leftPower);
+        rightMotor.setPower(rightPower);
     }
     public void travelMeters(float x) {
         if(x>0) {
