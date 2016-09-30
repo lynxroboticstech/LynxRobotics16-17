@@ -78,7 +78,7 @@ public class EncoderTest extends LinearOpMode {
         double gyroPerDegree=1765/90;
         while (zCounter < gyroPerDegree*X){
             hf.runDriveTrain(-.5f, 0);
-            zCounter += (hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*previousT;
+            zCounter += (hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(System.currentTimeMillis()-previousT);
             previousT=System.currentTimeMillis()-previousT;
             telemetry.addData("zCounter",zCounter);
             telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
