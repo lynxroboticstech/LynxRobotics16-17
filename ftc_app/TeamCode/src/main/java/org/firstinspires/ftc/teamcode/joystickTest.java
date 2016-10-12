@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Created by Student on 9/20/2016.
  */
 @TeleOp(name="joystickTest")
-public class JoystickTest extends OpMode {
+public class joystickTest extends OpMode {
     HardwareMap hwMap = null;
    // HardwareFunctions hf = null;
     DcMotor leftMotor;

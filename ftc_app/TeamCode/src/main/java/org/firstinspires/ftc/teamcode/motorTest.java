@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * Created by Student on 9/10/2016.
  */
 @Autonomous(name="Motor Test", group="Iterative Opmode")
-public class MotorTest extends LinearOpMode {
+public class motorTest extends LinearOpMode {
     public DcMotor leftMotor   = null;
     public DcMotor rightMotor   = null;
     HardwareMap hwMap           =  null;
