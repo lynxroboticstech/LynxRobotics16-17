@@ -128,11 +128,20 @@ public class EncoderTest extends LinearOpMode {
         double previousT=System.currentTimeMillis();
         //experimentally determined, probably.  Probably wrong.  Fix
         double zCounter = 0;
+<<<<<<< HEAD
         hf.runDriveTrain(-.3f, .3f);
         while (zCounter - (gyroPerDegree*X)<0){
             hf.runDriveTrain(-.3f, .3f);
             zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
             previousT=System.currentTimeMillis();
+=======
+        hf.runDriveTrain(-.5f, 0);
+        double gyroPerDegree=1765/90;
+        while (zCounter < gyroPerDegree*X){
+            hf.runDriveTrain(-.5f, 0);
+            zCounter += (hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(System.currentTimeMillis()-previousT);
+            previousT=System.currentTimeMillis()-previousT;
+>>>>>>> origin/master
             telemetry.addData("zCounter",zCounter);
             telemetry.addData("distance requested",gyroPerDegree*X);
             telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
