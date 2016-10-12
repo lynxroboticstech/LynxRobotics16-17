@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Created by Student on 9/15/2016.
  */
 @Autonomous(name="EncoderTest", group="Iterative Opmode")
-public class EncoderTest extends LinearOpMode {
+public class encoderTest extends LinearOpMode {
     HardwareMap hw=null;
     HardwareFunctions hf = null;
     double gyroValueWhenStraight=.581622678;
@@ -27,7 +27,7 @@ public class EncoderTest extends LinearOpMode {
         while((hf.leftMotor.getCurrentPosition() <= distance || hf.rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
             //should probably allow for some tolerance, maybe like 4 ticks
             int leftMotorPos=hf.leftMotor.getCurrentPosition();
-            int rightMotorPos=hf.rightMotor.getCurrentPosition()+250;
+            int rightMotorPos=hf.rightMotor.getCurrentPosition()+500;
             if( leftMotorPos>rightMotorPos ){
                 float correction = KP * (leftMotorPos - rightMotorPos);
                 hf.runDriveTrain((power - correction), (power + correction));
@@ -128,24 +128,11 @@ public class EncoderTest extends LinearOpMode {
         double previousT=System.currentTimeMillis();
         //experimentally determined, probably.  Probably wrong.  Fix
         double zCounter = 0;
-<<<<<<< HEAD
         hf.runDriveTrain(-.3f, .3f);
-        while (zCounter - (gyroPerDegree*X)<0){
+        while (zCounter - (gyroPerDegree*X)<0) {
             hf.runDriveTrain(-.3f, .3f);
-            zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
-            previousT=System.currentTimeMillis();
-=======
-        hf.runDriveTrain(-.5f, 0);
-        double gyroPerDegree=1765/90;
-        while (zCounter < gyroPerDegree*X){
-            hf.runDriveTrain(-.5f, 0);
-            zCounter += (hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(System.currentTimeMillis()-previousT);
-            previousT=System.currentTimeMillis()-previousT;
->>>>>>> origin/master
-            telemetry.addData("zCounter",zCounter);
-            telemetry.addData("distance requested",gyroPerDegree*X);
-            telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
-            telemetry.update();
+            zCounter += ((double) hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight) * (double) (System.currentTimeMillis() - previousT);
+            previousT = System.currentTimeMillis();
         }
         hf.runDriveTrain(0,0);
     }
