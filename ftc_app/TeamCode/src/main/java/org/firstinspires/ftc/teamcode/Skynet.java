@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * Created by Student on 9/15/2016.
  */
-@Autonomous(name="EncoderTest", group="Iterative Opmode")
-public class EncoderTest extends LinearOpMode {
+@Autonomous(name="Skynet", group="Iterative Opmode")
+public class Skynet extends LinearOpMode {
     HardwareMap hw=null;
     HardwareFunctions hf = null;
     double gyroValueWhenStraight=.581622678;
@@ -26,14 +26,12 @@ public class EncoderTest extends LinearOpMode {
         final float KP = 0.005f;
         while((hf.leftMotor.getCurrentPosition() <= distance || hf.rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
             //should probably allow for some tolerance, maybe like 4 ticks
-            int leftMotorPos=hf.leftMotor.getCurrentPosition();
-            int rightMotorPos=hf.rightMotor.getCurrentPosition()+250;
-            if( leftMotorPos>rightMotorPos ){
-                float correction = KP * (leftMotorPos - rightMotorPos);
+            if(hf.leftMotor.getCurrentPosition() > hf.rightMotor.getCurrentPosition()){
+                float correction = KP * (hf.leftMotor.getCurrentPosition()^2 - hf.rightMotor.getCurrentPosition()^2);
                 hf.runDriveTrain((power - correction), (power + correction));
                 telemetry.addData("Correction Facrot Right", correction);
-            }else if(hf.leftMotor.getCurrentPosition() <rightMotorPos){
-                float correction = KP * (rightMotorPos - leftMotorPos);
+            }else if(hf.leftMotor.getCurrentPosition() < hf.rightMotor.getCurrentPosition()){
+                float correction = KP * (hf.rightMotor.getCurrentPosition()^2 - hf.leftMotor.getCurrentPosition()^2);
                 hf.runDriveTrain((power + correction), (power - correction));
                 telemetry.addData("Correction Facrot Left", correction);
 
@@ -68,7 +66,7 @@ public class EncoderTest extends LinearOpMode {
         }
     }
 
-    public void turnXDegreesBasic(double X) {
+    public void turnXDegrees(double X) {
         hf.gyroSensor.calibrate();
         while(hf.gyroSensor.isCalibrating()){}
         double previousT=System.currentTimeMillis();
@@ -76,40 +74,6 @@ public class EncoderTest extends LinearOpMode {
         double zCounter = 0;
         hf.runDriveTrain(-.3f, .3f);
         double gyroPerDegree=.84f;//Wrong,
-        while (zCounter - (gyroPerDegree*X)<0){
-            hf.runDriveTrain(-.3f, .3f);
-            zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
-            previousT=System.currentTimeMillis();
-            telemetry.addData("zCounter",zCounter);
-            telemetry.addData("distance requested",gyroPerDegree*X);
-            telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
-            telemetry.update();
-        }
-        hf.runDriveTrain(0,0);
-    }
-    public void turnXDegreesuUsingHardCodedValues(double X) {
-        hf.gyroSensor.calibrate();
-        while(hf.gyroSensor.isCalibrating()){}
-        double previousT=System.currentTimeMillis();
-        //experimentally determined, probably.  Probably wrong.  Fix
-        double zCounter = 0;
-        hf.runDriveTrain(-.3f, .3f);
-        double gyroPerDegree=.84f;//Wrong,
-            if(X==90){
-                gyroPerDegree=.84;
-            }
-        if(X==180){
-            gyroPerDegree=.9;
-        }
-        if(X==720){
-            gyroPerDegree=.95;
-        }
-        if(X==45){
-            gyroPerDegree=.73;
-        }
-        if(X==30){
-            gyroPerDegree=.67;
-        }
         while (zCounter - (gyroPerDegree*X)<0){
             hf.runDriveTrain(-.3f, .3f);
             zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
@@ -129,6 +93,7 @@ public class EncoderTest extends LinearOpMode {
         //experimentally determined, probably.  Probably wrong.  Fix
         double zCounter = 0;
         hf.runDriveTrain(-.3f, .3f);
+        if(X>0){
         while (zCounter - (gyroPerDegree*X)<0){
             hf.runDriveTrain(-.3f, .3f);
             zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
@@ -137,6 +102,17 @@ public class EncoderTest extends LinearOpMode {
             telemetry.addData("distance requested",gyroPerDegree*X);
             telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
             telemetry.update();
+        }}
+        else{
+            while (zCounter - (gyroPerDegree*X)>0){
+                hf.runDriveTrain(-.3f, .3f);
+                zCounter += ((double)hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight)*(double)(System.currentTimeMillis()-previousT);
+                previousT=System.currentTimeMillis();
+                telemetry.addData("zCounter",zCounter);
+                telemetry.addData("distance requested",gyroPerDegree*X);
+                telemetry.addData("gyro value",hf.getGyroRotation(hf.gyroSensor) - gyroValueWhenStraight);
+                telemetry.update();
+            }
         }
         hf.runDriveTrain(0,0);
     }
@@ -192,20 +168,67 @@ public class EncoderTest extends LinearOpMode {
         hf.runDriveTrain(0.0f, 0.0f);
         hf.resetEncoders();
     }
+    public void fire(){
+        //TODO: FIRE SHOTS
+    }
+    public void pressButton(){
+        //TODO: pressButton
+    }
+    public void runAutonomous(){
 
+        double step=0;//use this to control current movement
+        while(opModeIsActive()) {
+            if (step == 0) {
+                fire();//fire ball, fire code still isn't implemented
+                fire();
+                step++;
+            }
+            if (step == 1) {
+                //Turn to face toward the wall.
+                turnXDegrees(45);
+                step++;
+            }
+            if (step == 2) {
+                //Go till we are close to wall.  The 2 needs to be calbrated to be correct
+                travelMeters(2);
+                step++;
+            }
+            if (step == 3) {
+                //turn almost all around, hopefully level with wall.  This may need modification
+                turnXDegrees(315);
+                step++;
+            }
+            if (step == 4) {
+                //go until red is detected.  This need a lot more precision
+                hf.runDriveTrain(.2f, .2f);
+                if (hf.getColorSensorRed() > 4 && hf.getColorSensorBlue() < hf.getColorSensorRed()) {
+                    step++;
+                }
+            }
+            if (step == 5) {
+                //hit first button
+                pressButton();
+                step++;
+            }
+            if (step == 6) {
+                //after hitting button keep going
+                hf.runDriveTrain(.2f, .2f);
+                if (hf.getColorSensorRed() > 4 && hf.getColorSensorBlue() < hf.getColorSensorRed()) {
+                    step++;
+                }
+            }
+            if (step == 7) {
+                //press second button.  This stage needs more complexity and precision
+                pressButton();
+                step++;
+            }
+        }
+    }
     public void runOpMode() throws InterruptedException{
         hf=new HardwareFunctions(hardwareMap);
         waitForStart();
-        //travelMeters(1); //218/10000
-        //turnXDegrees(90);
-        //calibrateEncoder(1, 0.4f);
-       /* for (int i = 0; i < 12*4; i++) {
-            turnXDegrees(15,.6f);
-            sleep(500);
-        }*/
+        //runAutonomous();
         encoderDriveMeters(1f,.4f);
-        while(opModeIsActive()) {
-            idle();
         }
 
     }
@@ -220,4 +243,4 @@ public class EncoderTest extends LinearOpMode {
             //CORRECTLY CALIBRATED
         }
     } */
-}
+

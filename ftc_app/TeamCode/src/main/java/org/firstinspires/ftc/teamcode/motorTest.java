@@ -33,8 +33,8 @@ public class MotorTest extends LinearOpMode {
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
         waitForStart();
         while (opModeIsActive()) {
-            leftMotor.setPower(20);
-            rightMotor.setPower(20);
+            leftMotor.setPower(1);
+            rightMotor.setPower(1);
             idle();
         }
     }
