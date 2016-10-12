@@ -24,14 +24,17 @@ public class Skynet extends LinearOpMode {
 
         //p(id) loop, telemetry
         final float KP = 0.005f;
-        while((hf.leftMotor.getCurrentPosition() <= distance || hf.rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
+        int leftMotorPos=hf.leftMotor.getCurrentPosition();
+        int rightMotorPos=hf.leftMotor.getCurrentPosition()+500;
+
+        while((leftMotorPos <= distance || rightMotorPos <= distance) && opModeIsActive()){
             //should probably allow for some tolerance, maybe like 4 ticks
-            if(hf.leftMotor.getCurrentPosition() > hf.rightMotor.getCurrentPosition()){
-                float correction = KP * (hf.leftMotor.getCurrentPosition()^2 - hf.rightMotor.getCurrentPosition()^2);
+            if(leftMotorPos > rightMotorPos){
+                float correction = KP * (leftMotorPos - rightMotorPos);
                 hf.runDriveTrain((power - correction), (power + correction));
                 telemetry.addData("Correction Facrot Right", correction);
-            }else if(hf.leftMotor.getCurrentPosition() < hf.rightMotor.getCurrentPosition()){
-                float correction = KP * (hf.rightMotor.getCurrentPosition()^2 - hf.leftMotor.getCurrentPosition()^2);
+            }else if(leftMotorPos < rightMotorPos){
+                float correction = KP * (rightMotorPos - leftMotorPos);
                 hf.runDriveTrain((power + correction), (power - correction));
                 telemetry.addData("Correction Facrot Left", correction);
 
