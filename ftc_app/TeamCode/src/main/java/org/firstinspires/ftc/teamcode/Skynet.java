@@ -178,7 +178,6 @@ public class Skynet extends LinearOpMode {
         //TODO: pressButton
     }
     public void runAutonomous(){
-
         double step=0;//use this to control current movement
         while(opModeIsActive()) {
             if (step == 0) {

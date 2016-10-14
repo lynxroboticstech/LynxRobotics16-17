@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 /**
  * Created by Student on 9/13/2016.
  */
-@Autonomous(name="Napalm", group="Iterative Opmode")
+//@Autonomous(name="Napalm", group="Iterative Opmode")
 public class PidLoop extends LinearOpMode {
     //WHY ARE YOU RENAMING THINGS?   PLEASE DON'T BREAK THINGS.
     HardwareMap hw=null;

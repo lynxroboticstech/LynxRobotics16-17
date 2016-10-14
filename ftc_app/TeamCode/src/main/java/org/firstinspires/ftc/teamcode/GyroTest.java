@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to th org.firstinspires.ftc.teamcodee Driver Station OpMode list
 */
-@Autonomous(name="GyroTest", group="Iterative Opmode")
+//@Autonomous(name="GyroTest", group="Iterative Opmode")
 //to clarify, the hardware isn't made to work.  See the function in encoder test for farther reference.
 //hf.getGyroRotation(gyro) gives gyro rotation in z in arbitrary units.
 //numerical integration FTW.

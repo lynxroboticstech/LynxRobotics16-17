@@ -26,12 +26,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class HardwareFunctions{
     HardwareMap hwMap           =  null;
-
     public DcMotor leftMotor   = null;
     public DcMotor rightMotor   = null;
     public ColorSensor colorSensor = null;
     public OpticalDistanceSensor ODS = null;
-
     public GyroSensor gyroSensor=null;
     public UltrasonicSensor ultrasonicSensor=null;
     public UltrasonicSensor ultrasonicSensor2=null;
@@ -43,15 +41,11 @@ public class HardwareFunctions{
         rightMotor.setPower(0);
         leftMotor.setDirection(DcMotor.Direction.REVERSE);
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
-
         colorSensor = hardwareMap.colorSensor.get("color sensor");
         colorSensor.enableLed(false);
-
         ODS = hwMap.opticalDistanceSensor.get("ODS");
-
         gyroSensor=hwMap.gyroSensor.get("gyro");
         gyroSensor.calibrate();
-
         ultrasonicSensor=hardwareMap.ultrasonicSensor.get("ultrasonic");
         ultrasonicSensor2=hardwareMap.ultrasonicSensor.get("ultrasonic2");
     }
