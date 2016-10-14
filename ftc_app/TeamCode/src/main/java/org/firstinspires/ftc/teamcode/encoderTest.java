@@ -27,10 +27,10 @@ public class encoderTest extends LinearOpMode {
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //p(id) loop, telemetry
-        final float KP = 0.005f;
-        float KI = 0.003f;
+        float KP = 0.005f;
+        float KI = 0.004f;
         float I = 0.0f;
-        long startTime = System.currentTimeMillis(); 
+        long startTime = System.currentTimeMillis();
         while((leftMotor.getCurrentPosition() <= distance || rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
             //should probably allow for some tolerance, maybe like 4 ticks
             int leftMotorPos=leftMotor.getCurrentPosition();
@@ -38,29 +38,33 @@ public class encoderTest extends LinearOpMode {
             long deltaTime = System.currentTimeMillis() - startTime;
             float P = leftMotorPos - rightMotorPos;
             //Calculate integral with change in time from the previous iteration of the loop
-            I = I + P*deltaTime;
-            if(leftMotorPos>rightMotorPos){
-                float correction = KP * (leftMotorPos - rightMotorPos) + KI * I;
-                runDriveTrain((power - correction), (power + correction));
-                telemetry.addData("Correction Facrot Right", correction);
-            }else if(leftMotor.getCurrentPosition() <rightMotorPos){
-                //Might have to negate the I term in order for it to work the other way too
-                float correction = KP * (rightMotorPos - leftMotorPos) + KI * I;
-                runDriveTrain((power + correction), (power - correction));
-                telemetry.addData("Correction Facrot Left", correction);
-            }else{
-                runDriveTrain(power, power);
-            }
+            I = -(I + P*deltaTime);
+            //Set limits to prevent integral windup
+            if(I>100/KI) I=100/KI;
+            else if(I<-100/KI) I=-100/KI;
+            //Placed directly into the motor functions based on which way it is supposed to respond
+            float correction = KP * P + KI * I;
+            //Limit motor power from range of 0 to 100
+            float leftcorrection = power-correction;
+            if(leftcorrection>100) leftcorrection=100; if(leftcorrection<0) leftcorrection=0;
+            float rightcorrection = power+correction;
+            if(rightcorrection>100) rightcorrection=100; if(rightcorrection<0) rightcorrection=0;
+            runDriveTrain(leftcorrection, rightcorrection);
+            telemetry.addData("Correction Factor: ", correction);
             telemetry.addData("left motor", leftMotor.getCurrentPosition());
             telemetry.addData("right motor", rightMotor.getCurrentPosition());
+            telemetry.addData("KP", P);
+            telemetry.addData("I: ", I);
             telemetry.update();
             //Reset timer
             startTime = System.currentTimeMillis();
             //Pause for one millisecond in order to not overwhelm the I loop.
-            Thread.sleep(1);
+            try{
+                Thread.sleep(1);
+            } catch(Exception e){
+
+            }
         }
-        telemetry.addLine("Encoder has stopped.");
-        telemetry.update();
         runDriveTrain(0.0f, 0.0f);
         resetEncoders();
     }
@@ -68,7 +72,7 @@ public class encoderTest extends LinearOpMode {
         encoderDrive(distance * ticks / circumference, power);
     }
     public void travelMeters(float d) {
-        travelMeters(d, 1.0f);
+        travelMeters(d, 0.3f);
     }
     public void travelMeters(float d, float power) {
         d=d*100;
