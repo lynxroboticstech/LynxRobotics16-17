@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorSimple.Direction;
+import java.lang.*;
 /**
  * Created by Student on 9/15/2016.
  */
@@ -27,16 +28,24 @@ public class encoderTest extends LinearOpMode {
 
         //p(id) loop, telemetry
         final float KP = 0.005f;
+        float KI = 0.003f;
+        float I = 0.0f;
+        long startTime = System.currentTimeMillis(); 
         while((leftMotor.getCurrentPosition() <= distance || rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
             //should probably allow for some tolerance, maybe like 4 ticks
             int leftMotorPos=leftMotor.getCurrentPosition();
             int rightMotorPos=rightMotor.getCurrentPosition();
-            if( leftMotorPos>rightMotorPos ){
-                float correction = KP * (leftMotorPos - rightMotorPos);
+            long deltaTime = System.currentTimeMillis() - startTime;
+            float P = leftMotorPos - rightMotorPos;
+            //Calculate integral with change in time from the previous iteration of the loop
+            I = I + P*deltaTime;
+            if(leftMotorPos>rightMotorPos){
+                float correction = KP * (leftMotorPos - rightMotorPos) + KI * I;
                 runDriveTrain((power - correction), (power + correction));
                 telemetry.addData("Correction Facrot Right", correction);
             }else if(leftMotor.getCurrentPosition() <rightMotorPos){
-                float correction = KP * (rightMotorPos - leftMotorPos);
+                //Might have to negate the I term in order for it to work the other way too
+                float correction = KP * (rightMotorPos - leftMotorPos) + KI * I;
                 runDriveTrain((power + correction), (power - correction));
                 telemetry.addData("Correction Facrot Left", correction);
             }else{
@@ -45,6 +54,10 @@ public class encoderTest extends LinearOpMode {
             telemetry.addData("left motor", leftMotor.getCurrentPosition());
             telemetry.addData("right motor", rightMotor.getCurrentPosition());
             telemetry.update();
+            //Reset timer
+            startTime = System.currentTimeMillis();
+            //Pause for one millisecond in order to not overwhelm the I loop.
+            Thread.sleep(1);
         }
         telemetry.addLine("Encoder has stopped.");
         telemetry.update();
