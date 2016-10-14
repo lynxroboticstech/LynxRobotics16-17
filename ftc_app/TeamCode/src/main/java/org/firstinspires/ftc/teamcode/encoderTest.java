@@ -28,7 +28,7 @@ public class encoderTest extends LinearOpMode {
 
         //p(id) loop, telemetry
         float KP = 0.005f;
-        float KI = 0.004f;
+        float KI = 0.001f;
         float I = 0.0f;
         long startTime = System.currentTimeMillis();
         while((leftMotor.getCurrentPosition() <= distance || rightMotor.getCurrentPosition() <= distance) && opModeIsActive()){
@@ -40,8 +40,8 @@ public class encoderTest extends LinearOpMode {
             //Calculate integral with change in time from the previous iteration of the loop
             I = -(I + P*deltaTime);
             //Set limits to prevent integral windup
-            if(I>100/KI) I=100/KI;
-            else if(I<-100/KI) I=-100/KI;
+            if(I>100) I=100;
+            else if(I<-100) I=-100;
             //Placed directly into the motor functions based on which way it is supposed to respond
             float correction = KP * P + KI * I;
             //Limit motor power from range of 0 to 100
@@ -77,7 +77,8 @@ public class encoderTest extends LinearOpMode {
     public void travelMeters(float d, float power) {
         d=d*100;
         //convert d to cm
-        float distancePerTick=10000/218;//ticks/cm -- experimentally determined
+        int correction = -400;
+        float distancePerTick=(10000+correction)/218;//ticks/cm -- experimentally determined
         if(d > 0) {
             encoderDrive(d*distancePerTick, power);
         } else {
