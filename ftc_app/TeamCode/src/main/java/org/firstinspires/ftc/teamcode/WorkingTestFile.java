@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Autonomous(name="TESTING PROGRAM", group="Iterative Opmode")
 public class WorkingTestFile extends LinearOpMode {
     //THIS IS PURELY FOR TESTING FUNCTIONS AT A TIME
-    //DO NOT EXTEND HF
+    //DO NOT EXTEND HF.
     public DcMotor leftMotor   = null;
     public DcMotor rightMotor   = null;
     HardwareMap hwMap           =  null;
